@@ -215,8 +215,8 @@ if "settings" not in st.session_state:
         "currency": "₹",
         "income_goal": 50000.0,
         "savings_goal": 10000.0,
-        "user_name": "Manvi",
-        "user_email": "mnviit.55@gmail.com",
+        "user_name": "Prakriti",
+        "user_email": "prakriti.11@gmail.com",
     }
 
 if "budgets" not in st.session_state:
