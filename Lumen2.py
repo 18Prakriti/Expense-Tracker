@@ -28,6 +28,32 @@ st.markdown(
         color: #1A202C !important;
     }
 
+    /* Device Recommendation Banner */
+    .device-banner {
+        background: linear-gradient(135deg, #5B42F3 0%, #8034FF 100%);
+        color: #FFFFFF;
+        padding: 14px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        box-shadow: 0 4px 15px rgba(91, 66, 243, 0.3);
+        border-left: 4px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .device-banner-icon {
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .device-banner-text {
+        margin: 0;
+        line-height: 1.4;
+    }
+
     /* Make all Streamlit input labels dark & clearly visible */
     [data-testid="stWidgetLabel"] p, label, .stWidgetLabel {
         color: #0F172A !important;
@@ -342,7 +368,22 @@ if "budgets" not in st.session_state:
     }
 
 # ==========================================
-# 3. HELPER FUNCTIONS & DIALOGS
+# 3. DEVICE RECOMMENDATION BANNER
+# ==========================================
+st.markdown(
+    """
+    <div class="device-banner">
+        <span class="device-banner-icon">💻</span>
+        <p class="device-banner-text">
+            <strong>💜 Pro Tip:</strong> For the best experience, use Lumen on a <strong>laptop or desktop</strong> to unlock all features and interactive visualizations!
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ==========================================
+# 4. HELPER FUNCTIONS & DIALOGS
 # ==========================================
 def parse_and_add_transaction(prompt):
     amount_match = re.search(r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d{1,2})?)', prompt, re.IGNORECASE)
@@ -436,7 +477,7 @@ def show_day_details_modal(selected_date):
         st.divider()
 
 # ==========================================
-# 4. SIDEBAR NAVIGATION
+# 5. SIDEBAR NAVIGATION
 # ==========================================
 with st.sidebar:
     st.markdown("## 💜 **Lumen**")
@@ -476,7 +517,7 @@ total_balance = month_income - month_spend
 daily_threshold = (st.session_state["settings"]["income_goal"]) / 30
 
 # ==========================================
-# 5. FULL PAGE RENDERERS
+# 6. FULL PAGE RENDERERS
 # ==========================================
 
 def render_dashboard_page():
@@ -613,7 +654,7 @@ def render_dashboard_page():
                 st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
 
                 legend_html = "".join(
-                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1E293B; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; border-radius:50%; background:{CATEGORY_COLORS.get(cat, '#64748B')}"></div>{cat}</div>"""
+                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1E293B; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; background:{CATEGORY_COLORS.get(cat, '#64748B')}; border-radius:3px;"></div>{cat}</div>"""
                     for cat in cat_totals.index
                 )
                 st.markdown(f'<div style="margin-top:10px;">{legend_html}</div>', unsafe_allow_html=True)
@@ -892,7 +933,7 @@ def render_rewards_page():
             st.markdown('<div style="text-align:center;"><div class="badge-emoji">🌟</div><h3 style="color:#0F172A;">Consistent Tracker</h3><p style="color:#334155;">Logged expenses 7 days in a row!</p></div>', unsafe_allow_html=True)
     with c2:
         with st.container(border=True):
-            st.markdown('<div style="text-align:center;" class="badge-locked"><div class="badge-emoji">🏆</div><h3 style="color:#0F172A;">Saver Master</h3><p style="color:#334155;">Keep overall monthly expenses below budget.</p></div>', unsafe_allow_html=True)
+            st.markdown('<div style="text-align:center;" class="badge-locked"><div class="badge-emoji">🏆</div><h3 style="color:#0F172A;">Saver Master</h3><p style="color:#334155;">Keep overall monthly savings above 30%</p></div>', unsafe_allow_html=True)
 
 def render_settings_page():
     st.markdown("# ⚙️ Settings")
@@ -903,7 +944,7 @@ def render_settings_page():
     s["savings_goal"] = st.number_input("Monthly Savings Goal Target", value=s["savings_goal"], step=1000.0)
 
 # ==========================================
-# 6. ROUTER (WIRED TO FULL FUNCTIONS)
+# 7. ROUTER (WIRED TO FULL FUNCTIONS)
 # ==========================================
 page_map = {
     "Dashboard": render_dashboard_page,
