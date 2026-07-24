@@ -22,16 +22,22 @@ st.markdown(
         padding-bottom: 2rem !important;
     }
 
+    /* Base Body Styling */
     .stApp {
         background-color: #F6F7FB !important;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        color: #1A202C !important;
+        color: #000000 !important;
+    }
+
+    /* Enforce Black Color across Headers & Standard Paragraphs */
+    h1, h2, h3, h4, h5, h6, p, div, span, label {
+        color: #000000;
     }
 
     /* Device Recommendation Banner */
     .device-banner {
         background: linear-gradient(135deg, #5B42F3 0%, #8034FF 100%);
-        color: #FFFFFF;
+        color: #FFFFFF !important;
         padding: 14px 20px;
         border-radius: 12px;
         margin-bottom: 20px;
@@ -44,6 +50,10 @@ st.markdown(
         border-left: 4px solid rgba(255, 255, 255, 0.3);
     }
 
+    .device-banner p, .device-banner strong {
+        color: #FFFFFF !important;
+    }
+
     .device-banner-icon {
         font-size: 1.4rem;
         flex-shrink: 0;
@@ -54,27 +64,9 @@ st.markdown(
         line-height: 1.4;
     }
 
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] {
-        background-color: #FFFFFF;
-    }
-
-    [data-testid="stSidebar"] h2 {
-        color: #0F172A !important;
-    }
-
-    [data-testid="stSidebar"] .stMarkdown, 
-    [data-testid="stSidebar"] p {
-        color: #1A202C !important;
-    }
-
-    [data-testid="stSidebar"] [data-testid="stCaption"] {
-        color: #334155 !important;
-    }
-
     /* Make all Streamlit input labels dark & clearly visible */
     [data-testid="stWidgetLabel"] p, label, .stWidgetLabel {
-        color: #0F172A !important;
+        color: #000000 !important;
         font-weight: 700 !important;
         font-size: 0.95rem !important;
     }
@@ -126,8 +118,8 @@ st.markdown(
         box-shadow: 0 4px 15px rgba(108, 93, 211, 0.03);
     }
 
-    [data-testid="stMetricLabel"] { color: #475569 !important; font-weight: 600 !important; }
-    [data-testid="stMetricValue"] { color: #0F172A !important; }
+    [data-testid="stMetricLabel"] { color: #1E293B !important; font-weight: 700 !important; }
+    [data-testid="stMetricValue"] { color: #000000 !important; font-weight: 800 !important; }
 
     /* Progress bar gradient */
     .progress-container {
@@ -150,11 +142,35 @@ st.markdown(
         padding: 10px 20px !important;
     }
 
+    /* AI Chat Box Container */
+    .ai-chat-box-wrapper {
+        background-color: #FFFFFF;
+        border: 1px solid #CBD5E1;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    /* Individual Chat Bubble Styling inside Chat Box */
+    [data-testid="stChatMessage"] {
+        background-color: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 12px !important;
+        margin-bottom: 12px !important;
+        padding: 12px !important;
+    }
+
+    [data-testid="stChatMessage"] p {
+        color: #000000 !important;
+        font-weight: 500 !important;
+    }
+
     /* Lumi Chat Bubble */
     .lumi-flex-container { display: flex; align-items: center; gap: 12px; }
     .lumi-bubble {
         background: #F3E8FF;
-        color: #3B0764;
+        color: #3B0764 !important;
         font-size: 0.85rem;
         font-weight: 700;
         padding: 10px 16px;
@@ -163,31 +179,15 @@ st.markdown(
         box-shadow: 0 2px 8px rgba(108, 93, 211, 0.08);
     }
 
-    .dash-card-title { font-size: 1.1rem; font-weight: 800; color: #0F172A; margin: 0; }
-    .dash-card-sub { color: #475569; font-size: 0.82rem; font-weight: 600; margin-top: 2px; margin-bottom: 12px; }
-
-    /* AI Chat Container */
-    .ai-chat-container {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    .ai-chat-container h1, 
-    .ai-chat-container h2, 
-    .ai-chat-container p {
-        color: #0F172A !important;
-    }
+    .dash-card-title { font-size: 1.1rem; font-weight: 800; color: #000000; margin: 0; }
+    .dash-card-sub { color: #334155; font-size: 0.82rem; font-weight: 600; margin-top: 2px; margin-bottom: 12px; }
 
     /* ================= CALENDAR TAB SPECIFIC STYLES ================= */
     .cal-grid-header {
         text-align: center;
         font-size: 12px;
-        font-weight: 700;
-        color: #A0AEC0;
+        font-weight: 800;
+        color: #1E293B;
         margin-bottom: 12px;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -229,8 +229,8 @@ st.markdown(
 
     .cal-day-num {
         font-size: 13px;
-        font-weight: 600;
-        color: #4A5568;
+        font-weight: 700;
+        color: #000000;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -238,11 +238,11 @@ st.markdown(
 
     .tx-count-badge {
         font-size: 10px;
-        background: rgba(255, 255, 255, 0.7);
-        color: #2D3748;
+        background: rgba(255, 255, 255, 0.9);
+        color: #000000;
         padding: 2px 7px;
         border-radius: 10px;
-        font-weight: 600;
+        font-weight: 700;
         backdrop-filter: blur(4px);
     }
 
@@ -259,9 +259,9 @@ st.markdown(
         letter-spacing: -0.3px;
     }
 
-    .text-saved { color: #27AE60 !important; }
+    .text-saved { color: #15803D !important; }
     .text-normal { color: #854D0E !important; }
-    .text-over { color: #E74C3C !important; }
+    .text-over { color: #DC2626 !important; }
 
     .cal-empty-box {
         background: #F8F9FE;
@@ -308,7 +308,7 @@ st.markdown(
         border: 1px solid #EDF2F7;
         justify-content: flex-start;
     }
-    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #718096; font-weight: 500; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #000000; font-weight: 600; }
     .dot { width: 10px; height: 10px; border-radius: 50%; }
 
     /* Transactions Row Styling */
@@ -317,12 +317,12 @@ st.markdown(
         width: 38px; height: 38px; border-radius: 50%; color: white; font-weight: 800;
         display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;
     }
-    .tx-row-title { font-weight: 700; color: #0F172A; font-size: 0.9rem; }
-    .tx-row-sub { color: #475569; font-size: 0.8rem; font-weight: 500; }
+    .tx-row-title { font-weight: 700; color: #000000; font-size: 0.9rem; }
+    .tx-row-sub { color: #334155; font-size: 0.8rem; font-weight: 600; }
     .tx-row-amt { margin-left: auto; font-weight: 800; font-size: 0.9rem; }
 
     .insight-tips { margin-top: 10px; padding-left: 18px; }
-    .insight-tips li { color: #1E293B; font-size: 0.88rem; margin-bottom: 8px; line-height: 1.5; }
+    .insight-tips li { color: #000000; font-size: 0.88rem; margin-bottom: 8px; line-height: 1.5; font-weight: 500; }
 
     /* Badges / Rewards */
     .badge-card {
@@ -476,10 +476,12 @@ def parse_and_add_transaction(prompt):
 @st.dialog("💬 Quick Add Assistant")
 def quick_add_chatbot():
     st.caption("Add multiple entries on any date in plain text.")
+    st.markdown('<div class="ai-chat-box-wrapper">', unsafe_allow_html=True)
     chat_container = st.container(height=300)
     with chat_container:
         for msg in st.session_state["chat_history"]:
             st.chat_message(msg["role"]).write(msg["content"])
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if user_input := st.chat_input("Type your transaction...", key="dialog_chat_input"):
         st.session_state["chat_history"].append({"role": "user", "content": user_input})
@@ -502,7 +504,7 @@ def show_day_details_modal(selected_date):
         sign = "+" if row["Type"] == "Income" else "-"
         color = "#16A34A" if row["Type"] == "Income" else "#DC2626"
 
-        c_desc.markdown(f"**{row['Category']}**  \n<small style='color:#475569;'>{row.get('Note', '')}</small>", unsafe_allow_html=True)
+        c_desc.markdown(f"**{row['Category']}**  \n<small style='color:#334155;'>{row.get('Note', '')}</small>", unsafe_allow_html=True)
         c_amt.markdown(f"<span style='color:{color}; font-weight:800;'>{sign}{curr}{row['Amount']:,.2f}</span>", unsafe_allow_html=True)
 
         if c_del.button("🗑️", key=f"del_{idx}"):
@@ -511,19 +513,19 @@ def show_day_details_modal(selected_date):
         st.divider()
 
 # ==========================================
-# 5. SIDEBAR NAVIGATION
+# 5. SIDEBAR NAVIGATION & LEFT PANEL IMAGE
 # ==========================================
 with st.sidebar:
-    # Sidebar Header with Logo
+    # --- Image added at the top left above headings ---
     try:
-        st.image("assets/Lumen.jpeg", width=200)
-    except:
+        st.image("Lumen.jpeg", use_container_width=True)
+    except Exception:
         try:
-            st.image("Lumen.jpeg", width=200)
-        except:
-            st.markdown("## 💜 **Lumen**")
-    
-    st.markdown("## 💜 **Lumen**", unsafe_allow_html=True)
+            st.image("assets/Lumen.jpeg", use_container_width=True)
+        except Exception:
+            st.caption("🖼️ *(Lumen.jpeg)*")
+
+    st.markdown("## 💜 **Lumen**")
     st.caption("AI Expense Tracker")
     st.markdown("---")
 
@@ -572,11 +574,11 @@ def render_dashboard_page():
             st.markdown(
                 f"""
                 <div style='margin-top: 10px;'>
-                    <h1 style='margin:0; padding:0; font-size:2.4rem; font-weight:800; color:#0F172A; line-height: 1.2;'>
+                    <h1 style='margin:0; padding:0; font-size:2.4rem; font-weight:800; color:#000000; line-height: 1.2;'>
                         Hi {st.session_state["settings"]["user_name"]}, <br>
                         <span class='purple-text'>here's your money in motion.</span>
                     </h1>
-                    <p style='color:#334155; margin-top:8px; font-size:1rem; font-weight:600;'>
+                    <p style='color:#000000; margin-top:8px; font-size:1rem; font-weight:600;'>
                         Every smart choice builds your bigger tomorrow. 💜
                     </p>
                 </div>
@@ -617,7 +619,7 @@ def render_dashboard_page():
         st.markdown(
             f"""
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="font-size: 0.95rem; color: #0F172A;">🌱 Savings Goal Progress</strong>
+                <strong style="font-size: 0.95rem; color: #000000;">🌱 Savings Goal Progress</strong>
                 <span style="font-size: 0.85rem; font-weight: 800; color: #5B42F3;">{curr_symbol}{total_balance:,.2f} / {curr_symbol}{target_savings:,.2f}</span>
             </div>
             <div class="progress-container">
@@ -659,8 +661,8 @@ def render_dashboard_page():
                 margin=dict(l=5, r=5, t=5, b=5),
                 paper_bgcolor="rgba(0,0,0,0)",
                 plot_bgcolor="rgba(0,0,0,0)",
-                xaxis=dict(showgrid=False, tickfont=dict(color="#334155", size=12)),
-                yaxis=dict(showgrid=True, gridcolor="#CBD5E1", tickfont=dict(color="#334155", size=12)),
+                xaxis=dict(showgrid=False, tickfont=dict(color="#000000", size=12)),
+                yaxis=dict(showgrid=True, gridcolor="#CBD5E1", tickfont=dict(color="#000000", size=12)),
             )
             st.plotly_chart(fig_week, use_container_width=True, config={"displayModeBar": False})
 
@@ -697,8 +699,8 @@ def render_dashboard_page():
                 st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
 
                 legend_html = "".join(
-                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1E293B; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; border-radius:50%; background:{CATEGORY_COLORS.get(c, '#64748B')};"></div>{c}</div>"""
-                    for c in cat_totals.index
+                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#000000; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; background:{CATEGORY_COLORS.get(cat, '#64748B')}; border-radius:3px;"></div>{cat}</div>"""
+                    for cat in cat_totals.index
                 )
                 st.markdown(f'<div style="margin-top:10px;">{legend_html}</div>', unsafe_allow_html=True)
 
@@ -761,16 +763,13 @@ def render_ai_chat_page():
     st.markdown("# 💬 AI Chat")
     st.caption("Tell Lumi what you spent or earned in plain language.")
 
-    # Add container with border for chat
-    with st.container(border=True):
-        st.markdown('<div class="ai-chat-container">', unsafe_allow_html=True)
-        
-        chat_container = st.container(height=450)
-        with chat_container:
-            for msg in st.session_state["chat_history"]:
-                st.chat_message(msg["role"]).write(msg["content"])
-
-        st.markdown('</div>', unsafe_allow_html=True)
+    # Added Box Container around AI Chat so it doesn't blend with background
+    st.markdown('<div class="ai-chat-box-wrapper">', unsafe_allow_html=True)
+    chat_container = st.container(height=450)
+    with chat_container:
+        for msg in st.session_state["chat_history"]:
+            st.chat_message(msg["role"]).write(msg["content"])
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if user_input := st.chat_input("Type your transaction... e.g. 'Spent 350 on pizza yesterday'", key="page_chat_input"):
         st.session_state["chat_history"].append({"role": "user", "content": user_input})
@@ -785,10 +784,10 @@ def render_calendar_page():
         st.markdown(
             """
             <div style='text-align: left;'>
-                <h1 style='margin: 0; padding: 0; font-size: 2.3rem; font-weight: 800; color: #1A202C;'>
+                <h1 style='margin: 0; padding: 0; font-size: 2.3rem; font-weight: 800; color: #000000;'>
                     <span class='purple-text'>Spending Map</span>
                 </h1>
-                <p style='color:#718096; margin-top: 4px; font-size:0.95rem; font-weight: 500;'>
+                <p style='color:#000000; margin-top: 4px; font-size:0.95rem; font-weight: 600;'>
                     See where your money goes, day by day.
                 </p>
             </div>
@@ -877,123 +876,114 @@ def render_calendar_page():
 
     # Footer Legend
     st.markdown(
-        """<div class="cal-legend">
-            <div class="legend-item"><div class="dot" style="background:#27AE60"></div>Net Saved</div>
-            <div class="legend-item"><div class="dot" style="background:#FEF9C3; border: 1px solid #CA8A04;"></div>Normal Spending</div>
-            <div class="legend-item"><div class="dot" style="background:#E74C3C"></div>Over Threshold</div>
-            <div class="legend-item"><div class="dot" style="background:#EDF2F7; border: 1px solid #A0AEC0;"></div>No Activity</div>
-        </div>""",
+        """
+        <div class="cal-legend">
+            <div class="legend-item"><div class="dot" style="background:#A3E635;"></div> Net Saved / Profit</div>
+            <div class="legend-item"><div class="dot" style="background:#FDE047;"></div> Moderate Spending</div>
+            <div class="legend-item"><div class="dot" style="background:#FCA5A5;"></div> High Spending Day</div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
 def render_transactions_page():
     st.markdown("# 📑 Transactions")
-    st.caption("Complete history of all logged income and expenses.")
+    
+    with st.form("add_tx_form", clear_on_submit=True):
+        st.subheader("Add New Transaction")
+        f_col1, f_col2, f_col3, f_col4 = st.columns(4)
+        t_date = f_col1.date_input("Date", value=today)
+        t_cat = f_col2.selectbox("Category", CATEGORIES)
+        t_type = f_col3.selectbox("Type", ["Expense", "Income"])
+        t_amt = f_col4.number_input("Amount", min_value=0.0, step=10.0)
+        t_note = st.text_input("Note", placeholder="Lunch, Taxi, Salary...")
+        
+        if st.form_submit_button("Add Entry", use_container_width=True):
+            new_row = pd.DataFrame([{"Date": t_date, "Category": t_cat, "Type": t_type, "Amount": t_amt, "Note": t_note}])
+            st.session_state["data"] = pd.concat([st.session_state["data"], new_row], ignore_index=True)
+            st.success("Transaction added!")
+            st.rerun()
+
+    st.markdown("### Transaction Log")
     st.dataframe(st.session_state["data"], use_container_width=True)
 
 def render_budgets_page():
-    st.markdown("# 🎯 Category Budgets")
-    st.markdown("<p style='color:#334155; font-weight:600; font-size:1rem; margin-bottom: 20px;'>Adjust monthly limits for each spending category.</p>", unsafe_allow_html=True)
-    
-    for cat, val in st.session_state["budgets"].items():
-        st.session_state["budgets"][cat] = st.number_input(
-            f"Budget limit for {cat}", 
-            value=val, 
-            step=100.0,
-            key=f"budget_input_{cat}"
-        )
+    st.markdown("# 🎯 Budgets")
+    st.caption("Set spending targets per category.")
+
+    cols = st.columns(2)
+    for idx, (cat, limit) in enumerate(st.session_state["budgets"].items()):
+        spent = this_month_df[(this_month_df["Category"] == cat) & (this_month_df["Type"] == "Expense")]["Amount"].sum()
+        pct = min(100, int((spent / limit) * 100)) if limit > 0 else 0
+        
+        with cols[idx % 2]:
+            with st.container(border=True):
+                st.write(f"### {cat}")
+                st.write(f"Spent: **{curr_symbol}{spent:,.2f}** / **{curr_symbol}{limit:,.2f}**")
+                st.progress(pct / 100)
+                new_limit = st.number_input(f"New Limit for {cat}", value=float(limit), key=f"b_{cat}")
+                st.session_state["budgets"][cat] = new_limit
 
 def render_reports_page():
-    st.markdown("# 📊 Financial Reports & Analytics")
-    st.caption("In-depth analysis of your financial performance.")
-
-    # High-level Summary Metrics
-    r1, r2, r3, r4 = st.columns(4)
-    r1.metric("Total Income", f"{curr_symbol}{month_income:,.2f}")
-    r2.metric("Total Expense", f"{curr_symbol}{month_spend:,.2f}")
-    r3.metric("Net Savings", f"{curr_symbol}{total_balance:,.2f}")
-    savings_rate = (total_balance / month_income * 100) if month_income > 0 else 0
-    r4.metric("Savings Rate", f"{savings_rate:.1f}%")
-
-    st.write("")
-
-    # Visual Charts Section
-    col1, col2 = st.columns([1, 1], vertical_alignment="top")
-
-    with col1:
-        with st.container(border=True):
-            st.markdown('<p class="dash-card-title">Income vs. Expenses</p><p class="dash-card-sub">Comparison overview</p>', unsafe_allow_html=True)
-            fig_cf = go.Figure([
-                go.Bar(name='Income', x=['Current Month'], y=[month_income], marker_color='#16A34A', width=0.3),
-                go.Bar(name='Expense', x=['Current Month'], y=[month_spend], marker_color='#DC2626', width=0.3)
-            ])
-            fig_cf.update_layout(
-                height=260,
-                barmode='group',
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                margin=dict(l=10, r=10, t=10, b=10),
-                xaxis=dict(tickfont=dict(color="#334155", size=12)),
-                yaxis=dict(showgrid=True, gridcolor="#CBD5E1", tickfont=dict(color="#334155", size=12))
-            )
-            st.plotly_chart(fig_cf, use_container_width=True, config={"displayModeBar": False})
-
-    with col2:
-        with st.container(border=True):
-            st.markdown('<p class="dash-card-title">Top Expense Categories</p><p class="dash-card-sub">Spending concentration</p>', unsafe_allow_html=True)
-            cat_df = this_month_df[this_month_df["Type"] == "Expense"].groupby("Category")["Amount"].sum().reset_index()
-            if not cat_df.empty:
-                fig_bar = go.Figure(go.Bar(
-                    x=cat_df["Amount"],
-                    y=cat_df["Category"],
-                    orientation='h',
-                    marker=dict(color='#5B42F3')
-                ))
-                fig_bar.update_layout(
-                    height=260,
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    margin=dict(l=10, r=10, t=10, b=10),
-                    yaxis=dict(tickfont=dict(color="#334155", size=12)),
-                    xaxis=dict(showgrid=True, gridcolor="#CBD5E1", tickfont=dict(color="#334155", size=12))
-                )
-                st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar": False})
-            else:
-                st.info("No expenses logged for this month yet.")
-
-    st.write("")
-
-    # Export Data Section
-    with st.container(border=True):
-        st.markdown('<p class="dash-card-title">📥 Export Financial Data</p><p class="dash-card-sub">Download your transaction history as CSV</p>', unsafe_allow_html=True)
-        csv_data = df_data.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download CSV Report",
-            data=csv_data,
-            file_name=f"lumen_report_{today.strftime('%Y_%m_%d')}.csv",
-            mime="text/csv",
-        )
+    st.markdown("# 📊 Reports & Analytics")
+    st.write(f"Total Income: **{curr_symbol}{month_income:,.2f}**")
+    st.write(f"Total Expenses: **{curr_symbol}{month_spend:,.2f}**")
+    
+    cat_summary = this_month_df[this_month_df["Type"] == "Expense"].groupby("Category")["Amount"].sum().reset_index()
+    fig = go.Figure(go.Bar(x=cat_summary["Category"], y=cat_summary["Amount"], marker_color="#5B42F3"))
+    fig.update_layout(title="Monthly Spend per Category", yaxis_title="Amount")
+    st.plotly_chart(fig, use_container_width=True)
 
 def render_rewards_page():
-    st.markdown("# 🎁 Rewards & Badges")
-    c1, c2 = st.columns(2, vertical_alignment="top")
-    with c1:
-        with st.container(border=True):
-            st.markdown('<div style="text-align:center;"><div class="badge-emoji">🌟</div><h3 style="color:#0F172A;">Consistent Tracker</h3><p style="color:#334155;">Logged expenses 7 days in a row!</p></div>', unsafe_allow_html=True)
-    with c2:
-        with st.container(border=True):
-            st.markdown('<div style="text-align:center;" class="badge-locked"><div class="badge-emoji">🏆</div><h3 style="color:#0F172A;">Saver Master</h3><p style="color:#334155;">Keep overall spending below budget!</p></div>', unsafe_allow_html=True)
+    st.markdown("# 🎁 Rewards & Milestones")
+    r1, r2, r3 = st.columns(3)
+    
+    with r1:
+        st.markdown(
+            """<div class="badge-card">
+                <div class="badge-emoji">🌱</div>
+                <strong style="color:#000000;">Saver Starter</strong>
+                <p style="font-size:0.8rem; color:#000000;">Log your first transaction</p>
+            </div>""",
+            unsafe_allow_html=True
+        )
+    with r2:
+        st.markdown(
+            """<div class="badge-card">
+                <div class="badge-emoji">🔥</div>
+                <strong style="color:#000000;">7-Day Streak</strong>
+                <p style="font-size:0.8rem; color:#000000;">Track money for 7 days in a row</p>
+            </div>""",
+            unsafe_allow_html=True
+        )
+    with r3:
+        st.markdown(
+            """<div class="badge-card badge-locked">
+                <div class="badge-emoji">👑</div>
+                <strong style="color:#000000;">Budget Master</strong>
+                <p style="font-size:0.8rem; color:#000000;">Stay under budget for 1 month</p>
+            </div>""",
+            unsafe_allow_html=True
+        )
 
 def render_settings_page():
     st.markdown("# ⚙️ Settings")
-    s = st.session_state["settings"]
-    s["user_name"] = st.text_input("Name", s["user_name"])
-    s["user_email"] = st.text_input("Email", s["user_email"])
-    s["currency"] = st.text_input("Currency Symbol", s["currency"])
-    s["savings_goal"] = st.number_input("Monthly Savings Goal Target", value=s["savings_goal"], step=1000.0)
+    with st.form("settings_form"):
+        name = st.text_input("Name", value=st.session_state["settings"]["user_name"])
+        email = st.text_input("Email", value=st.session_state["settings"]["user_email"])
+        curr = st.selectbox("Currency Symbol", ["₹", "$", "€", "£"], index=["₹", "$", "€", "£"].index(st.session_state["settings"]["currency"]))
+        sav_goal = st.number_input("Savings Goal", value=float(st.session_state["settings"]["savings_goal"]))
+        
+        if st.form_submit_button("Save Settings"):
+            st.session_state["settings"]["user_name"] = name
+            st.session_state["settings"]["user_email"] = email
+            st.session_state["settings"]["currency"] = curr
+            st.session_state["settings"]["savings_goal"] = sav_goal
+            st.success("Settings updated successfully!")
+            st.rerun()
 
 # ==========================================
-# 7. ROUTER (WIRED TO FULL FUNCTIONS)
+# 7. ROUTING
 # ==========================================
 page_map = {
     "Dashboard": render_dashboard_page,
@@ -1006,4 +996,4 @@ page_map = {
     "Settings": render_settings_page,
 }
 
-page_map.get(st.session_state["page"], render_dashboard_page)()
+page_map[st.session_state["page"]]()
