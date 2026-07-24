@@ -7,10 +7,20 @@ import plotly.graph_objects as go
 import streamlit as st
 
 # ==========================================
+# 0. IMPORT ASSETS CONFIGURATION
+# ==========================================
+from assets import (
+    ASSETS, COLORS, CATEGORY_COLORS, UI_CONFIG,
+    CATEGORY_KEYWORDS, INCOME_KEYWORDS,
+    load_image, get_category_color, detect_category, is_income
+)
+
+# ==========================================
 # 1. PAGE CONFIG & UI STYLING
 # ==========================================
 st.set_page_config(
-    page_title="Lumen - AI Expense Tracker", layout="wide"
+    page_title=UI_CONFIG["page_title"],
+    layout=UI_CONFIG["layout"]
 )
 
 st.markdown(
@@ -285,18 +295,6 @@ CATEGORIES = [
     "Shopping", "Entertainment", "Bills", "Health", "Income",
 ]
 
-CATEGORY_COLORS = {
-    "Food": "#D97706",
-    "Groceries": "#16A34A",
-    "Transport": "#0891B2",
-    "Shopping": "#DB2777",
-    "Coffee": "#EA580C",
-    "Entertainment": "#9333EA",
-    "Bills": "#475569",
-    "Health": "#059669",
-    "Income": "#16A34A",
-}
-
 today = date.today()
 
 if "data" not in st.session_state:
@@ -366,34 +364,20 @@ def parse_and_add_transaction(prompt):
             except ValueError:
                 pass
 
-    income_keywords = ["received", "earned", "salary", "income", "freelance", "refund", "got", "added"]
-    is_income = any(kw in lower_p for kw in income_keywords)
-    tx_type = "Income" if is_income else "Expense"
-
-    category = "Bills"
-    if is_income:
+    # Use helper functions from assets
+    is_income_tx = is_income(prompt)
+    tx_type = "Income" if is_income_tx else "Expense"
+    category = detect_category(prompt)
+    
+    if is_income_tx:
         category = "Income"
-    elif any(kw in lower_p for kw in ["coffee", "cafe", "starbucks", "latte", "tea", "chai"]):
-        category = "Coffee"
-    elif any(kw in lower_p for kw in ["pizza", "burger", "food", "lunch", "dinner", "swiggy", "zomato", "restaurant"]):
-        category = "Food"
-    elif any(kw in lower_p for kw in ["grocery", "groceries", "supermarket", "vegetables", "fruits"]):
-        category = "Groceries"
-    elif any(kw in lower_p for kw in ["uber", "ola", "cab", "transport", "bus", "train", "flight", "petrol", "fuel"]):
-        category = "Transport"
-    elif any(kw in lower_p for kw in ["clothes", "shopping", "amazon", "flipkart", "shoes", "mall"]):
-        category = "Shopping"
-    elif any(kw in lower_p for kw in ["movie", "cinema", "entertainment", "netflix", "game"]):
-        category = "Entertainment"
-    elif any(kw in lower_p for kw in ["medicine", "doctor", "pharmacy", "health", "hospital"]):
-        category = "Health"
 
     note = f"Quick Add: {category}"
 
     new_row = pd.DataFrame([{"Date": target_date, "Category": category, "Type": tx_type, "Amount": amount, "Note": note}])
     st.session_state["data"] = pd.concat([st.session_state["data"], new_row], ignore_index=True)
 
-    sign = "+" if is_income else "-"
+    sign = "+" if is_income_tx else "-"
     curr = st.session_state["settings"]["currency"]
     msg = f"Added **{category}** ({tx_type}) of **{sign}{curr}{amount:,.2f}** for **{target_date.strftime('%b %d')}**."
     return True, msg
@@ -425,7 +409,7 @@ def show_day_details_modal(selected_date):
     for idx, row in day_txs.iterrows():
         c_desc, c_amt, c_del = st.columns([3, 2, 1])
         sign = "+" if row["Type"] == "Income" else "-"
-        color = "#16A34A" if row["Type"] == "Income" else "#DC2626"
+        color = COLORS["success"] if row["Type"] == "Income" else COLORS["danger"]
 
         c_desc.markdown(f"**{row['Category']}**  \n<small style='color:#475569;'>{row.get('Note', '')}</small>", unsafe_allow_html=True)
         c_amt.markdown(f"<span style='color:{color}; font-weight:800;'>{sign}{curr}{row['Amount']:,.2f}</span>", unsafe_allow_html=True)
@@ -439,8 +423,8 @@ def show_day_details_modal(selected_date):
 # 4. SIDEBAR NAVIGATION
 # ==========================================
 with st.sidebar:
-    st.markdown("## 💜 **Lumen**")
-    st.caption("AI Expense Tracker")
+    st.markdown(f"## {UI_CONFIG['app_name']}")
+    st.caption(UI_CONFIG['app_subtitle'])
     st.markdown("---")
 
     nav_items = [
@@ -501,12 +485,14 @@ def render_dashboard_page():
             )
         with head_mascot_col:
             try:
-                st.image("Lumi.png", width=160)
+                primary, fallback, width = load_image("lumi_main")
+                st.image(primary, width=width)
             except Exception:
                 try:
-                    st.image("assets/Lumi.png", width=160)
+                    if fallback:
+                        st.image(fallback, width=width)
                 except Exception:
-                    st.write("🍋 *(Lumi.png)*")
+                    st.write(f"{UI_CONFIG['mascot_emoji']} *({UI_CONFIG['mascot_name']}.png)*")
 
     with col_quickadd:
         st.markdown('<div class="quick-add-wrap" style="margin-top: 10px;">', unsafe_allow_html=True)
@@ -584,9 +570,10 @@ def render_dashboard_page():
             lumi_mascot_col, lumi_msg_col = st.columns([1, 3.5], vertical_alignment="center")
             with lumi_mascot_col:
                 try:
-                    st.image("assets/Dashboard.png", width=110)
+                    path, _, width = load_image("dashboard")
+                    st.image(path, width=width)
                 except:
-                    st.write("🍋 *(Dashboard.png)*")
+                    st.write(f"{UI_CONFIG['mascot_emoji']} *(Dashboard.png)*")
             with lumi_msg_col:
                 st.markdown(
                     """
@@ -603,7 +590,7 @@ def render_dashboard_page():
 
             cat_totals = this_month_df[this_month_df["Type"] == "Expense"].groupby("Category")["Amount"].sum()
             if not cat_totals.empty:
-                colors = [CATEGORY_COLORS.get(c, "#64748B") for c in cat_totals.index]
+                colors = [get_category_color(c) for c in cat_totals.index]
                 fig_donut = go.Figure(go.Pie(
                     labels=cat_totals.index, values=cat_totals.values,
                     hole=0.65, marker=dict(colors=colors, line=dict(color="#FFFFFF", width=2)),
@@ -613,7 +600,7 @@ def render_dashboard_page():
                 st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
 
                 legend_html = "".join(
-                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1E293B; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; border-radius:50%; background:{CATEGORY_COLORS.get(cat, '#64748B')}"></div>{cat}</div>"""
+                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1E293B; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; border-radius:50%; background:{get_category_color(cat)};"></div>{cat}</div>"""
                     for cat in cat_totals.index
                 )
                 st.markdown(f'<div style="margin-top:10px;">{legend_html}</div>', unsafe_allow_html=True)
@@ -630,8 +617,8 @@ def render_dashboard_page():
             recent_txs = df_data.sort_values("Date", ascending=False).head(3)
             for _, row in recent_txs.iterrows():
                 sign = "+" if row["Type"] == "Income" else "-"
-                color = "#16A34A" if row["Type"] == "Income" else "#DC2626"
-                avatar_bg = CATEGORY_COLORS.get(row["Category"], "#5B42F3")
+                color = COLORS["success"] if row["Type"] == "Income" else COLORS["danger"]
+                avatar_bg = get_category_color(row["Category"])
                 st.markdown(
                     f"""
                     <div class="tx-row">
@@ -659,9 +646,10 @@ def render_dashboard_page():
             
             with lumi_col:
                 try:
-                    st.image("assets/LumiCoach.png", width=65)
+                    path, _, width = load_image("lumi_coach")
+                    st.image(path, width=width)
                 except:
-                    st.write("🍋")
+                    st.write(UI_CONFIG['mascot_emoji'])
 
             st.markdown(
                 """
@@ -834,8 +822,8 @@ def render_reports_page():
         with st.container(border=True):
             st.markdown('<p class="dash-card-title">Income vs. Expenses</p><p class="dash-card-sub">Comparison overview</p>', unsafe_allow_html=True)
             fig_cf = go.Figure([
-                go.Bar(name='Income', x=['Current Month'], y=[month_income], marker_color='#16A34A', width=0.3),
-                go.Bar(name='Expense', x=['Current Month'], y=[month_spend], marker_color='#DC2626', width=0.3)
+                go.Bar(name='Income', x=['Current Month'], y=[month_income], marker_color=COLORS["success"], width=0.3),
+                go.Bar(name='Expense', x=['Current Month'], y=[month_spend], marker_color=COLORS["danger"], width=0.3)
             ])
             fig_cf.update_layout(
                 height=260,
@@ -857,7 +845,7 @@ def render_reports_page():
                     x=cat_df["Amount"],
                     y=cat_df["Category"],
                     orientation='h',
-                    marker=dict(color='#5B42F3')
+                    marker=dict(color=COLORS["primary_dark"])
                 ))
                 fig_bar.update_layout(
                     height=260,
@@ -892,7 +880,7 @@ def render_rewards_page():
             st.markdown('<div style="text-align:center;"><div class="badge-emoji">🌟</div><h3 style="color:#0F172A;">Consistent Tracker</h3><p style="color:#334155;">Logged expenses 7 days in a row!</p></div>', unsafe_allow_html=True)
     with c2:
         with st.container(border=True):
-            st.markdown('<div style="text-align:center;" class="badge-locked"><div class="badge-emoji">🏆</div><h3 style="color:#0F172A;">Saver Master</h3><p style="color:#334155;">Keep overall monthly expenses below budget.</p></div>', unsafe_allow_html=True)
+            st.markdown('<div style="text-align:center;" class="badge-locked"><div class="badge-emoji">🏆</div><h3 style="color:#0F172A;">Saver Master</h3><p style="color:#334155;">Keep overall spending below budget!</p></div>', unsafe_allow_html=True)
 
 def render_settings_page():
     st.markdown("# ⚙️ Settings")
