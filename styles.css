@@ -1,0 +1,36 @@
+.hero-title{
+    font-size:72px;
+    font-weight:800;
+    line-height:1.05;
+    color:#111827;
+}
+
+.hero-subtitle{
+    font-size:22px;
+    color:#667085;
+    line-height:1.6;
+    margin:25px 0 40px 0;
+}
+
+.feature-card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    border:1px solid #E5E7EB;
+    text-align:center;
+    height:170px;
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
+}
+
+.feature-card h4{
+    margin:12px 0 8px;
+}
+
+.feature-card p{
+    color:#667085;
+    font-size:14px;
+}
+
+.icon{
+    font-size:34px;
+}
