@@ -54,6 +54,24 @@ st.markdown(
         line-height: 1.4;
     }
 
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #FFFFFF;
+    }
+
+    [data-testid="stSidebar"] h2 {
+        color: #0F172A !important;
+    }
+
+    [data-testid="stSidebar"] .stMarkdown, 
+    [data-testid="stSidebar"] p {
+        color: #1A202C !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stCaption"] {
+        color: #334155 !important;
+    }
+
     /* Make all Streamlit input labels dark & clearly visible */
     [data-testid="stWidgetLabel"] p, label, .stWidgetLabel {
         color: #0F172A !important;
@@ -147,6 +165,22 @@ st.markdown(
 
     .dash-card-title { font-size: 1.1rem; font-weight: 800; color: #0F172A; margin: 0; }
     .dash-card-sub { color: #475569; font-size: 0.82rem; font-weight: 600; margin-top: 2px; margin-bottom: 12px; }
+
+    /* AI Chat Container */
+    .ai-chat-container {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .ai-chat-container h1, 
+    .ai-chat-container h2, 
+    .ai-chat-container p {
+        color: #0F172A !important;
+    }
 
     /* ================= CALENDAR TAB SPECIFIC STYLES ================= */
     .cal-grid-header {
@@ -480,7 +514,16 @@ def show_day_details_modal(selected_date):
 # 5. SIDEBAR NAVIGATION
 # ==========================================
 with st.sidebar:
-    st.markdown("## 💜 **Lumen**")
+    # Sidebar Header with Logo
+    try:
+        st.image("assets/Lumen.jpeg", width=200)
+    except:
+        try:
+            st.image("Lumen.jpeg", width=200)
+        except:
+            st.markdown("## 💜 **Lumen**")
+    
+    st.markdown("## 💜 **Lumen**", unsafe_allow_html=True)
     st.caption("AI Expense Tracker")
     st.markdown("---")
 
@@ -654,8 +697,8 @@ def render_dashboard_page():
                 st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar": False})
 
                 legend_html = "".join(
-                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1E293B; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; background:{CATEGORY_COLORS.get(cat, '#64748B')}; border-radius:3px;"></div>{cat}</div>"""
-                    for cat in cat_totals.index
+                    f"""<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#1E293B; margin-right:12px; margin-bottom:6px;"><div style="width:10px; height:10px; border-radius:50%; background:{CATEGORY_COLORS.get(c, '#64748B')};"></div>{c}</div>"""
+                    for c in cat_totals.index
                 )
                 st.markdown(f'<div style="margin-top:10px;">{legend_html}</div>', unsafe_allow_html=True)
 
@@ -718,10 +761,16 @@ def render_ai_chat_page():
     st.markdown("# 💬 AI Chat")
     st.caption("Tell Lumi what you spent or earned in plain language.")
 
-    chat_container = st.container(height=450)
-    with chat_container:
-        for msg in st.session_state["chat_history"]:
-            st.chat_message(msg["role"]).write(msg["content"])
+    # Add container with border for chat
+    with st.container(border=True):
+        st.markdown('<div class="ai-chat-container">', unsafe_allow_html=True)
+        
+        chat_container = st.container(height=450)
+        with chat_container:
+            for msg in st.session_state["chat_history"]:
+                st.chat_message(msg["role"]).write(msg["content"])
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
     if user_input := st.chat_input("Type your transaction... e.g. 'Spent 350 on pizza yesterday'", key="page_chat_input"):
         st.session_state["chat_history"].append({"role": "user", "content": user_input})
@@ -933,7 +982,7 @@ def render_rewards_page():
             st.markdown('<div style="text-align:center;"><div class="badge-emoji">🌟</div><h3 style="color:#0F172A;">Consistent Tracker</h3><p style="color:#334155;">Logged expenses 7 days in a row!</p></div>', unsafe_allow_html=True)
     with c2:
         with st.container(border=True):
-            st.markdown('<div style="text-align:center;" class="badge-locked"><div class="badge-emoji">🏆</div><h3 style="color:#0F172A;">Saver Master</h3><p style="color:#334155;">Keep overall monthly savings above 30%</p></div>', unsafe_allow_html=True)
+            st.markdown('<div style="text-align:center;" class="badge-locked"><div class="badge-emoji">🏆</div><h3 style="color:#0F172A;">Saver Master</h3><p style="color:#334155;">Keep overall spending below budget!</p></div>', unsafe_allow_html=True)
 
 def render_settings_page():
     st.markdown("# ⚙️ Settings")
