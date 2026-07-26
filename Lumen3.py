@@ -609,28 +609,19 @@ def show_day_details_modal(selected_date):
     
     if day_txs.empty:
         st.info("No transactions logged for this day.")
-        return
-
-    curr = st.session_state["settings"]["currency"]
-    for idx, row in day_txs.iterrows():
-        c_desc, c_amt, c_del = st.columns([3, 2, 1])
-        sign = "+" if row["Type"] == "Income" else "-"
-        color = "#4ADE80" if row["Type"] == "Income" else "#F87171"
-        
-        c_desc.markdown(
-            f"<div style='color: #F8FAFC !important; font-weight: 700; font-size: 1rem;'>{row['Category']}</div>"
-            f"<div style='color: #94A3B8 !important; font-size: 0.85rem;'>{row.get('Note', '')}</div>", 
-            unsafe_allow_html=True
-        )
-        c_amt.markdown(
-            f"<div style='color: {color} !important; font-weight: 800; font-size: 1.05rem; text-align: right;'>{sign}{curr}{row['Amount']:,.2f}</div>", 
-            unsafe_allow_html=True
-        )
-        
-        if c_del.button("🗑️", key=f"del_{idx}"):
-            st.session_state["data"] = st.session_state["data"].drop(idx).reset_index(drop=True)
-            st.rerun()
-        st.divider()
+    else:
+        for idx, row in day_txs.iterrows():
+            col_info, col_del = st.columns([4, 1])
+            with col_info:
+                sign = "+" if row["Type"] == "Income" else "-"
+                curr = st.session_state["settings"]["currency"]
+                st.markdown(f"**{row['Category']}** ({row['Type']}): {sign}{curr}{row['Amount']:,.2f} — *{row['Note']}*")
+            with col_del:
+                if st.button("Delete", key=f"del_tx_{idx}"):
+                    st.session_state["data"] = st.session_state["data"].drop(index=idx).reset_index(drop=True)
+                    st.success("Transaction deleted!")
+                    st.rerun()
+                    st.divider()
 
 # ==========================================
 # 5. SIDEBAR NAVIGATION
