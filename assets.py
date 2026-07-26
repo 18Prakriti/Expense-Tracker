@@ -1,28 +1,74 @@
 """
-Asset configuration for Lumen Expense Tracker
-Centralized management of all static resources.
+assets.py
+
+Centralized asset management for the Lumen Expense Tracker.
+Works locally and after uploading to GitHub or Streamlit Cloud.
 """
 
-import os
+from pathlib import Path
 
-# Project root
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# ---------------------------------------------------------
+# Project Directories
+# ---------------------------------------------------------
+
+# Root directory of the project
+ROOT_DIR = Path(__file__).resolve().parent
 
 # Assets folder
-ASSET_BASE_PATH = os.path.join(BASE_DIR, "assets")
+ASSETS_DIR = ROOT_DIR / "assets"
 
-# All image assets
+# ---------------------------------------------------------
+# Image Assets
+# ---------------------------------------------------------
+
 ASSETS = {
-    "lumi_main": os.path.join(ASSET_BASE_PATH, "Lumi.png"),
-    "dashboard": os.path.join(ASSET_BASE_PATH, "Dashboard.png"),
-    "lumi_coach": os.path.join(ASSET_BASE_PATH, "LumiCoach.png"),
-    "logo": os.path.join(ASSET_BASE_PATH, "Logo.png"),
-    "background": os.path.join(ASSET_BASE_PATH, "Background.png"),
-    "login": os.path.join(ASSET_BASE_PATH, "Login.png"),
-    "profile": os.path.join(ASSET_BASE_PATH, "Profile.png"),
-    "expense": os.path.join(ASSET_BASE_PATH, "Expense.png"),
-    "analytics": os.path.join(ASSET_BASE_PATH, "Analytics.png"),
-    "reports": os.path.join(ASSET_BASE_PATH, "Reports.png"),
-    "settings": os.path.join(ASSET_BASE_PATH, "Settings.png"),
-    "notification": os.path.join(ASSET_BASE_PATH, "Notification.png"),
+
+    # Main mascot
+    "lumi": ASSETS_DIR / "Lumi.png",
+
+    # Dashboard
+    "dashboard": ASSETS_DIR / "Dashboard.png",
+
+    # AI Coach
+    "coach": ASSETS_DIR / "LumiCoach.png",
+
+    # App logo (if added)
+    "logo": ASSETS_DIR / "Logo.png",
+
+    # Login page (if added)
+    "login": ASSETS_DIR / "Login.png",
+
+    # Profile page
+    "profile": ASSETS_DIR / "Profile.png",
+
+    # Analytics page
+    "analytics": ASSETS_DIR / "Analytics.png",
+
+    # Expense page
+    "expense": ASSETS_DIR / "Expense.png",
+
+    # Reports page
+    "reports": ASSETS_DIR / "Reports.png",
+
+    # Settings page
+    "settings": ASSETS_DIR / "Settings.png",
+
+    # Background image
+    "background": ASSETS_DIR / "Background.png",
+
+    # Default placeholder
+    "placeholder": ASSETS_DIR / "placeholder.png",
 }
+
+# ---------------------------------------------------------
+# Helper Function
+# ---------------------------------------------------------
+
+def asset(name: str) -> str:
+    """
+    Returns the absolute path of an asset.
+
+    Example:
+        st.image(asset("lumi"))
+    """
+    return str(ASSETS[name])
