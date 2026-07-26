@@ -929,7 +929,7 @@ def render_calendar_page():
             )
         with title_lumi_col:
             try:
-                st.image("assets/upper.png", width=120)
+                st.image("assets/Upper.png", width=120)
             except Exception:
                 try:
                     st.image("upper.png", width=120)
