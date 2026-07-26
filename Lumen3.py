@@ -792,12 +792,9 @@ def render_dashboard_page():
             lumi_mascot_col, lumi_msg_col = st.columns([1.2, 3], vertical_alignment="center")
             with lumi_mascot_col:
                 try:
-                    st.image("Dashboard.png", width=160)
+                    st.image("assets/Dashboard.png", width=160)
                 except Exception:
-                    try:
-                        st.image("assets/Dashboard.png", width=160)
-                    except Exception:
-                        st.write("🍋 *(Dashboard.png)*")
+                    st.write("🍋 *(Dashboard.png)*")
             with lumi_msg_col:
                 st.markdown(
                     """
@@ -836,219 +833,586 @@ def render_dashboard_page():
 
     with row2_left:
         with st.container(border=True):
-            st.markdown('<p class="dash-card-title">Recent Transactions</p><p class="dash-card-sub">Your latest activity</p>', unsafe_allow_html=True)
+            st.markdown('<p class="dash-card-title">Recent Transactions</p><p class="dash-card-sub">Latest entries</p>', unsafe_allow_html=True)
 
-            recent_df = df_data.sort_values(by="Date", ascending=False).head(5)
-            if recent_df.empty:
-                st.info("No transactions found yet.")
-            else:
-                for _, row in recent_df.iterrows():
-                    cat = row["Category"]
-                    color = CATEGORY_COLORS.get(cat, "#5B42F3")
-                    sign = "+" if row["Type"] == "Income" else "-"
-                    amt_color = "#4ADE80" if row["Type"] == "Income" else ("#F8FAFC" if is_dark else "#0F172A")
-                    
-                    st.markdown(
-                        f"""
-                        <div class="tx-row">
-                            <div class="tx-avatar" style="background-color: {color};">{cat[0]}</div>
-                            <div>
-                                <div class="tx-row-title">{cat}</div>
-                                <div class="tx-row-sub">{row['Date'].strftime('%b %d')} • {row.get('Note', '')}</div>
-                            </div>
-                            <div class="tx-row-amt" style="color: {amt_color};">{sign}{curr_symbol}{row['Amount']:,.2f}</div>
+            recent_txs = df_data.sort_values("Date", ascending=False).head(3)
+            for _, row in recent_txs.iterrows():
+                sign = "+" if row["Type"] == "Income" else "-"
+                color = "#16A34A" if row["Type"] == "Income" else "#DC2626"
+                avatar_bg = CATEGORY_COLORS.get(row["Category"], "#5B42F3")
+                st.markdown(
+                    f"""
+                    <div class="tx-row">
+                        <div class="tx-avatar" style="background:{avatar_bg};">{row['Category'][0]}</div>
+                        <div>
+                            <div class="tx-row-title">{row.get('Note', row['Category'])}</div>
+                            <div class="tx-row-sub">{row['Category']} · {row['Date']}</div>
                         </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
+                        <div class="tx-row-amt" style="color:{color};">{sign}{curr_symbol}{row['Amount']:,.2f}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
     with row2_right:
         with st.container(border=True):
-            st.markdown('<p class="dash-card-title">✨ Lumi AI Insights</p><p class="dash-card-sub">Smart financial guidance</p>', unsafe_allow_html=True)
+            head_col, lumi_col = st.columns([2.5, 1], vertical_alignment="center")
             
+            with head_col:
+                st.markdown(
+                    '<p class="dash-card-sub" style="color:#A855F7; font-weight:800; margin:0;">✨ AI INSIGHTS</p>'
+                    '<p class="dash-card-title">Lumi\'s tips 🍋</p>',
+                    unsafe_allow_html=True
+                )
+            
+            with lumi_col:
+                try:
+                    st.image("assets/LumiCoach.png", width=100)
+                except Exception:
+                    st.write("🍋")
+
             st.markdown(
                 """
                 <ul class="insight-tips">
-                    <li>💡 <strong>Smart Saving:</strong> Your grocery spending is 12% lower than last week. Great discipline!</li>
-                    <li>☕ <strong>Coffee Habit:</strong> You've spent ₹400 on coffee in the last 7 days. Consider home-brewing to save ~₹1,200 monthly.</li>
-                    <li>🎯 <strong>Goal Tracking:</strong> At your current savings rate, you are on track to surpass your monthly target by 15%.</li>
+                    <li><strong>Shopping</strong> accounts for most spending; review large purchases and pause nonessentials for 30 days.</li>
+                    <li>Set a weekly cap and enable instant alerts for any purchase over ₹500.</li>
                 </ul>
                 """,
-                unsafe_allow_html=True
+                unsafe_allow_html=True,
             )
-            
-            try:
-                st.image("Lumi(AI).png", width=140)
-            except Exception:
-                try:
-                    st.image("assets/Lumi(AI).png", width=140)
-                except Exception:
-                    pass
 
 def render_ai_chat_page():
-    st.markdown("<h1><span class='purple-text'>💬 Lumi AI Assistant</span></h1>", unsafe_allow_html=True)
-    st.caption("Chat with Lumi to analyze spending, query history, or add new items effortlessly.")
+    col_text, col_character = st.columns([1.8, 1], vertical_alignment="center", gap="small")
     
-    st.write("")
-    for msg in st.session_state["chat_history"]:
-        st.chat_message(msg["role"]).write(msg["content"])
+    with col_text:
+        st.markdown("# 💬 AI Chat")
+        st.caption("Tell Lumi what you spent or earned in plain language.")
+    
+    with col_character:
+        try:
+            st.image("assets/LUMI(AI).PNG", width=130)
+        except Exception:
+            try:
+                st.image("LUMI(AI).PNG", width=130)
+            except Exception:
+                st.write("🍋")
 
-    if user_prompt := st.chat_input("Ask Lumi anything about your money..."):
-        st.session_state["chat_history"].append({"role": "user", "content": user_prompt})
-        _, reply = parse_and_add_transaction(user_prompt)
+    st.markdown('<div class="ai-chat-box-wrapper">', unsafe_allow_html=True)
+    chat_container = st.container(height=450)
+    with chat_container:
+        for msg in st.session_state["chat_history"]:
+            st.chat_message(msg["role"]).write(msg["content"])
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if user_input := st.chat_input("Type your transaction... e.g. 'Spent 350 on pizza yesterday'", key="page_chat_input"):
+        st.session_state["chat_history"].append({"role": "user", "content": user_input})
+        _, reply = parse_and_add_transaction(user_input)
         st.session_state["chat_history"].append({"role": "assistant", "content": reply})
         st.rerun()
 
 def render_calendar_page():
-    st.markdown("<h1><span class='purple-text'>📅 Financial Calendar</span></h1>", unsafe_allow_html=True)
-    st.caption("Interactive daily breakdown of your financial flow.")
-    
-    col_m, col_y, _ = st.columns([2, 2, 4])
-    selected_month = col_m.selectbox("Month", list(calendar.month_name)[1:], index=today.month - 1)
-    selected_year = col_y.selectbox("Year", [2024, 2025, 2026, 2027], index=2)
-    
-    month_num = list(calendar.month_name).index(selected_month)
-    cal_matrix = calendar.monthcalendar(selected_year, month_num)
-    
-    st.write("")
-    days_header = st.columns(7)
-    weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    for i, d_name in enumerate(weekdays):
-        days_header[i].markdown(f"<div class='cal-grid-header'>{d_name}</div>", unsafe_allow_html=True)
+    col_title, col_actions = st.columns([3, 1], vertical_alignment="center")
 
-    for week in cal_matrix:
+    with col_title:
+        title_text_col, title_lumi_col = st.columns([2.5, 1], vertical_alignment="center")
+        with title_text_col:
+            st.markdown(
+                """<div style='text-align: left;'>
+                    <h1 style='margin: 0; padding: 0; font-size: 2.3rem; font-weight: 800;'>
+                        <span class='purple-text'>Spending Map</span>
+                    </h1>
+                    <p style='margin-top: 4px; font-size:0.95rem; font-weight: 600;'>
+                        See where your money goes, day by day.
+                    </p>
+                </div>""",
+                unsafe_allow_html=True,
+            )
+        with title_lumi_col:
+            try:
+                st.image("assets/upper.png", width=120)
+            except Exception:
+                try:
+                    st.image("upper.png", width=120)
+                except Exception:
+                    st.caption("🍋 *(assets/upper.png)*")
+
+    with col_actions:
+        st.markdown('<div class="quick-add-wrap">', unsafe_allow_html=True)
+        if st.button("+ Quick Add", use_container_width=True, key="quick_add_cal"):
+            quick_add_chatbot()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Selection Row
+    c1, _, _ = st.columns([1.8, 3, 5])
+    view_month_name = c1.selectbox(
+        "Month",
+        list(calendar.month_name)[1:],
+        index=today.month - 1,
+        label_visibility="collapsed",
+    )
+    month_idx = list(calendar.month_name).index(view_month_name)
+
+    income_goal = st.session_state["settings"].get("income_goal", 50000.0)
+    daily_threshold = income_goal / 30
+
+    cal = calendar.Calendar(firstweekday=6)  # Sunday start
+    weeks = cal.monthdayscalendar(today.year, month_idx)
+
+    # Weekday Headers
+    h_cols = st.columns(7)
+    for i, d in enumerate(["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]):
+        h_cols[i].markdown(
+            f"<div class='cal-grid-header'>{d}</div>", unsafe_allow_html=True
+        )
+
+    # Render Calendar Grid Days
+    for week in weeks:
         cols = st.columns(7)
-        for i, day_val in enumerate(week):
-            with cols[i]:
-                if day_val == 0:
-                    st.markdown("<div class='cal-empty-box'></div>", unsafe_allow_html=True)
-                else:
-                    d_obj = date(selected_year, month_num, day_val)
-                    day_txs = df_data[df_data["Date"] == d_obj]
-                    
-                    expense_sum = day_txs[day_txs["Type"] == "Expense"]["Amount"].sum()
-                    income_sum = day_txs[day_txs["Type"] == "Income"]["Amount"].sum()
-                    net_val = income_sum - expense_sum
-                    
-                    card_class = "card-normal"
-                    text_class = "text-normal"
-                    if not day_txs.empty:
-                        if net_val > 0:
-                            card_class = "card-saved"
-                            text_class = "text-saved"
-                        elif expense_sum > 1000:
-                            card_class = "card-over"
-                            text_class = "text-over"
+        for i, day in enumerate(week):
+            if day == 0:
+                cols[i].markdown(
+                    "<div class='cal-empty-box'></div>",
+                    unsafe_allow_html=True,
+                )
+            else:
+                cur_date = date(today.year, month_idx, day)
+                day_data = df_data[df_data["Date"] == cur_date]
 
-                    count_badge = f"<span class='tx-count-badge'>{len(day_txs)} txs</span>" if len(day_txs) > 0 else ""
-                    amt_display = f"{curr_symbol}{abs(net_val):,.0f}" if not day_txs.empty else ""
+                card_class = ""
+                amount_content = ""
+                count_badge = ""
+                has_tx = not day_data.empty
 
-                    st.markdown(
-                        f"""
-                        <div class="cal-day-box {card_class}">
-                            <div class="cal-day-num">
-                                <span>{day_val}</span>
-                                {count_badge}
-                            </div>
-                            <div class="card-amount-container">
-                                <span class="card-amount-text {text_class}">{amt_display}</span>
-                            </div>
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                    
-                    if st.button("", key=f"overlay_{selected_year}_{month_num}_{day_val}"):
-                        show_day_details_modal(d_obj)
+                if has_tx:
+                    tx_count = len(day_data)
+                    if tx_count > 1:
+                        count_badge = f"<span class='tx-count-badge'>{tx_count} items</span>"
+
+                    expense = day_data[day_data["Type"] == "Expense"]["Amount"].sum()
+                    income = day_data[day_data["Type"] == "Income"]["Amount"].sum()
+
+                    if income > expense:
+                        card_class = "card-saved"
+                        txt_cls, sign, val = "text-saved", "+", (income - expense)
+                    elif expense > daily_threshold:
+                        card_class = "card-over"
+                        txt_cls, sign, val = "text-over", "-", expense
+                    else:
+                        card_class = "card-normal"
+                        txt_cls, sign, val = "text-normal", "-", expense
+
+                    amount_content = f"""
+                    <div class="card-amount-container">
+                        <span class="card-amount-text {txt_cls}">{sign}{curr_symbol}{val:,.2f}</span>
+                    </div>
+                    """
+
+                card_html = f"""
+                <div class="cal-day-box {card_class}">
+                    <div class="cal-day-num"><span>{day}</span>{count_badge}</div>
+                    {amount_content}
+                </div>
+                """
+
+                with cols[i]:
+                    st.markdown(card_html.replace("\n", ""), unsafe_allow_html=True)
+                    # Overlay button rendered for EVERY day to trigger modal details
+                    if st.button(" ", key=f"overlay_{cur_date}"):
+                        show_day_details_modal(cur_date)
+
+    # Calendar Legend Footer (With Matching Pastel Indicators)
+    st.markdown(
+        """<div class="cal-legend">
+            <div class="legend-item"><div class="dot" style="background:#86EFAC; border: 1px solid #4ADE80;"></div>Net Saved</div>
+            <div class="legend-item"><div class="dot" style="background:#FDE047; border: 1px solid #FACC15;"></div>Normal Spending</div>
+            <div class="legend-item"><div class="dot" style="background:#FCA5A5; border: 1px solid #F87171;"></div>Over Threshold</div>
+            <div class="legend-item"><div class="dot" style="background:#E2E8F0; border: 1px solid #CBD5E1;"></div>No Activity</div>
+        </div>""",
+        unsafe_allow_html=True,
+    )
 
 def render_transactions_page():
-    st.markdown("<h1><span class='purple-text'>📑 All Transactions</span></h1>", unsafe_allow_html=True)
-    st.caption("Filter, search, and manage your complete transaction history.")
+    col_title, col_lumi = st.columns([0.85, 0.15])
     
-    search_query = st.text_input("🔍 Search notes or categories...")
-    filtered_df = df_data.copy()
-    
-    if search_query:
-        filtered_df = filtered_df[
-            filtered_df["Category"].str.contains(search_query, case=False, na=False) |
-            filtered_df["Note"].str.contains(search_query, case=False, na=False)
-        ]
-
-    st.dataframe(filtered_df, use_container_width=True)
-
-def render_budgets_page():
-    st.markdown("<h1><span class='purple-text'>🎯 Category Budgets</span></h1>", unsafe_allow_html=True)
-    st.caption("Set and monitor your spending limits per category.")
-    
-    for cat, limit in st.session_state["budgets"].items():
-        spent = this_month_df[(this_month_df["Category"] == cat) & (this_month_df["Type"] == "Expense")]["Amount"].sum()
-        pct = min(100, int((spent / limit) * 100)) if limit > 0 else 0
+    with col_title:
+        st.markdown("# 📑 Transactions")
+        st.caption("View, filter, and add transactions to your ledger.")
         
-        with st.container(border=True):
-            st.markdown(f"**{cat}** — Spent {curr_symbol}{spent:,.2f} of {curr_symbol}{limit:,.2f} ({pct}%)")
-            st.markdown(
-                f"""
-                <div class="progress-container">
-                    <div class="progress-bar-fill" style="width: {pct}%;"></div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+    with col_lumi:
+        try:
+            st.image("assets/Upper.png", width=65)
+        except Exception:
+            pass
+
+    with st.expander("➕ Add New Transaction", expanded=False):
+        with st.form("add_tx_form", clear_on_submit=True):
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                tx_date_input = st.date_input("Date", value=today)
+            with col2:
+                tx_category = st.selectbox("Category", CATEGORIES)
+                tx_amount = st.number_input("Amount", min_value=0.0, step=10.0, value=100.0)
+            with col3:
+                tx_type = st.selectbox("Type", ["Expense", "Income"])
+                tx_note = st.text_input("Note", value="")
+                
+            submitted = st.form_submit_button("Add Transaction", use_container_width=True)
+
+            if submitted:
+                tx_date = pd.to_datetime(tx_date_input).date()
+                new_entry = pd.DataFrame([{
+                    "Date": tx_date,
+                    "Category": tx_category,
+                    "Type": tx_type,
+                    "Amount": tx_amount,
+                    "Note": tx_note if tx_note else f"Manual Add: {tx_category}"
+                }])
+                st.session_state["data"] = pd.concat([st.session_state["data"], new_entry], ignore_index=True)
+                st.success("Transaction added successfully!")
+                st.rerun()
+
+    col_filter1, col_filter2 = st.columns([2, 2])
+    with col_filter1:
+        selected_cat = st.multiselect("Filter by Category", CATEGORIES, default=[])
+    with col_filter2:
+        selected_type = st.multiselect("Filter by Type", ["Expense", "Income"], default=[])
+
+    filtered_df = st.session_state["data"].copy()
+    filtered_df["Date"] = pd.to_datetime(filtered_df["Date"]).dt.date
+
+    if selected_cat:
+        filtered_df = filtered_df[filtered_df["Category"].isin(selected_cat)]
+    if selected_type:
+        filtered_df = filtered_df[filtered_df["Type"].isin(selected_type)]
+
+    filtered_df = filtered_df.sort_values("Date", ascending=False)
+
+    st.dataframe(
+        filtered_df,
+        column_config={
+            "Amount": st.column_config.NumberColumn(format=f"{curr_symbol}%.2f"),
+            "Date": st.column_config.DateColumn("Date", format="YYYY-MM-DD"),
+        },
+        use_container_width=True,
+        hide_index=True
+    )
+
+def render_budget_card(item):
+    pct = min(int((item["spent"] / item["total"]) * 100), 100)
+    
+    with st.container():
+        c1, c2, c3 = st.columns([0.5, 0.3, 0.2])
+        
+        with c1:
+            st.markdown(f"**{item['name']}**")
+            st.markdown(f"### ${item['spent']:.2f}")
+
+        with c2:
+            st.write("")
+            st.caption(f"of ${item['total']:.2f}")
+            st.write(f"**{pct}%**")
+
+        with c3:
+            try:
+                st.image(item["lumi"], width=65)
+            except Exception:
+                st.write("⭐")
+
+        st.progress(pct / 100)
+
+def render_budget_page():
+    st.caption("BUDGETS")
+    
+    head_col1, head_col2, head_col3 = st.columns([0.55, 0.25, 0.20])
+    with head_col1:
+        st.markdown("<h1 style='margin:0;'>Plan the month, own it 🪄</h1>", unsafe_allow_html=True)
+        st.caption("Smart budgets today, stress-free tomorrow. 💜")
+    with head_col2:
+        try:
+            st.image("assets/Upper.png", width=90)
+        except Exception:
+            pass
+    with head_col3:
+        if st.button("➕ New budget", type="primary", use_container_width=True):
+            pass
+
+    st.write("")
+
+    categories_data = [
+        {"name": "Food", "spent": 56.00, "total": 600.00, "lumi": "assets/Food.png"},
+        {"name": "Transport", "spent": 40.50, "total": 250.00, "lumi": "assets/Travel.png"},
+        {"name": "Shopping", "spent": 134.99, "total": 400.00, "lumi": "assets/Shoping.png"},
+        {"name": "Bills", "spent": 120.00, "total": 250.00, "lumi": "assets/Bills.png"},
+        {"name": "Entertainment", "spent": 15.99, "total": 200.00, "lumi": "assets/entertainment.png"},
+        {"name": "Groceries", "spent": 107.40, "total": 500.00, "lumi": "assets/Groceries.png"},
+    ]
+
+    for i in range(0, len(categories_data), 2):
+        col_left, col_right = st.columns(2)
+        with col_left:
+            render_budget_card(categories_data[i])
+        if i + 1 < len(categories_data):
+            with col_right:
+                render_budget_card(categories_data[i+1])
 
 def render_reports_page():
-    st.markdown("<h1><span class='purple-text'>📊 Advanced Reports</span></h1>", unsafe_allow_html=True)
-    st.caption("Deep-dive analytics into your cash flow trends.")
-    
-    monthly_trend = df_data.groupby(df_data["Date"].apply(lambda d: d.strftime("%B %Y")))["Amount"].sum().reset_index()
-    fig_trend = go.Figure(go.Scatter(x=monthly_trend["Date"], y=monthly_trend["Amount"], mode="lines+markers", line=dict(color="#5B42F3", width=3)))
-    fig_trend.update_layout(height=300, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-    st.plotly_chart(fig_trend, use_container_width=True)
+    # Asset paths
+    lumi_coach_path ="assets/LumiCoach.png"
+    trend_path ="assets/Trend.png"
+    bottom_r_path ="assets/Bottom(R).png"
 
-def render_rewards_page():
-    st.markdown("<h1><span class='purple-text'>🎁 Rewards & Badges</span></h1>", unsafe_allow_html=True)
-    st.caption("Unlock achievements as you build healthy financial habits!")
+    # Convert paths for embedded rendering
+    lumi_coach_img = "assets/LumiCoach.png"(lumi_coach_path)
+    trend_img = "assets/Trend.png"(trend_path)
+    bottom_r_img = "assets/Bottom(R).png"(bottom_r_path)
+
+    # --- Top Banner Header ---
+    st.markdown(f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative;">
+            <div>
+                <p style="color: #8B5CF6; font-size: 12px; font-weight: 800; letter-spacing: 1.2px; margin: 0; text-transform: uppercase;">REPORTS & ANALYTICS</p>
+                <h1 style="margin: 0; font-weight: 800; font-size: 32px; color: var(--text-primary);">
+                    Trends that tell <span class="purple-text">your story 🪄</span>
+                </h1>
+                <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">Data doesn't lie, but it does help! 💜</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="{trend_img}" style="height: 70px; object-fit: contain;" alt="Lumi Trend Banner" />
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # --- Top Summary Cards ---
+    m1, m2, m3 = st.columns(3)
     
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown('<div class="badge-card"><div class="badge-emoji">🌱</div><strong>Saver Initiate</strong><p style="font-size:12px; color:var(--text-secondary);">Logged first 10 transactions</p></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown('<div class="badge-card"><div class="badge-emoji">🔥</div><strong>Streak Master</strong><p style="font-size:12px; color:var(--text-secondary);">7 days active tracking</p></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown('<div class="badge-card badge-locked"><div class="badge-emoji">🏆</div><strong>Budget Pro</strong><p style="font-size:12px; color:var(--text-secondary);">Stay under budget for a month</p></div>', unsafe_allow_html=True)
+    with m1:
+        st.markdown(f"""
+            <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color);">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div style="background: #F3E8FF; padding: 8px; border-radius: 10px; font-size: 16px;">👛</div>
+                    <span style="font-size: 11px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px;">THIS MONTH SPEND</span>
+                </div>
+                <h2 style="margin: 0; font-size: 28px; font-weight: 800; color: var(--text-primary);">{curr_symbol}{month_spend:,.2f}</h2>
+                <p style="color: #16A34A; font-size: 12px; font-weight: 700; margin-top: 4px;">▼ 0.0% vs May</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with m2:
+        st.markdown(f"""
+            <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color);">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div style="background: #DCFCE7; padding: 8px; border-radius: 10px; font-size: 16px;">📈</div>
+                    <span style="font-size: 11px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px;">THIS MONTH INCOME</span>
+                </div>
+                <h2 style="margin: 0; font-size: 28px; font-weight: 800; color: #16A34A;">{curr_symbol}{month_income:,.2f}</h2>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with m3:
+        st.markdown(f"""
+            <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color);">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div style="background: #FEF3C7; padding: 8px; border-radius: 10px; font-size: 16px;">👑</div>
+                    <span style="font-size: 11px; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.5px;">NET THIS MONTH</span>
+                </div>
+                <h2 style="margin: 0; font-size: 28px; font-weight: 800; color: var(--text-primary);">{curr_symbol}{total_balance:,.2f}</h2>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+
+    # --- Section: 6-Month Trend Chart ---
+    with st.container(border=True):
+        c_head, c_opt = st.columns([4, 1])
+        with c_head:
+            st.markdown("### 6-month trend")
+        with c_opt:
+            st.selectbox("Range", ["Last 6 months", "Last 12 months"], label_visibility="collapsed")
+
+        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]
+        exp_data = [100, 150, 180, 200, 220, 300, 750]
+        inc_data = [200, 200, 200, 200, 4800, 4800, 4800]
+
+        fig_trend = go.Figure()
+        
+        fig_trend.add_trace(go.Scatter(
+            x=months, y=exp_data, name="expenses",
+            mode="lines+markers", line=dict(color="#F43F5E", width=3, shape='spline'),
+            marker=dict(size=8, color="#FFFFFF", line=dict(width=2, color="#F43F5E"))
+        ))
+
+        fig_trend.add_trace(go.Scatter(
+            x=months, y=inc_data, name="income",
+            mode="lines+markers", line=dict(color="#10B981", width=3, shape='spline'),
+            marker=dict(size=8, color="#FFFFFF", line=dict(width=2, color="#10B981"))
+        ))
+
+        # Add Lumi Character callout annotation inside line chart
+        fig_trend.add_layout_image(
+            dict(
+                source=trend_img,
+                xref="x", yref="y",
+                x="Mar", y=3600,
+                sizex=1.8, sizey=2200,
+                xanchor="center", yanchor="middle",
+                layer="above"
+            )
+        )
+
+        fig_trend.update_layout(
+            height=320,
+            margin=dict(l=10, r=10, t=10, b=10),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h", yanchor="bottom", y=-0.25, xanchor="center", x=0.5),
+            xaxis=dict(showgrid=False),
+            yaxis=dict(showgrid=True, gridcolor="#F1F5F9", range=[-200, 6500])
+        )
+
+        st.plotly_chart(fig_trend, use_container_width=True, config={"displayModeBar": False})
+
+    st.write("")
+
+    # --- Section: Income vs Expense (LumiCoach) & AI Coach's Notes (Bottom(R)) ---
+    b_col1, b_col2 = st.columns([1.2, 1])
+
+    with b_col1:
+        with st.container(border=True):
+            st.markdown("### Income vs Expense")
+            
+            fig_bar = go.Figure()
+            fig_bar.add_trace(go.Bar(name="Expenses", x=months, y=[0, 0, 0, 0, 0, 0, 950], marker_color="#8B5CF6"))
+            fig_bar.add_trace(go.Bar(name="Income", x=months, y=[0, 0, 0, 0, 5000, 5000, 0], marker_color="#10B981"))
+
+            # LumiCoach character overlay on Income vs Expense
+            fig_bar.add_layout_image(
+                dict(
+                    source=lumi_coach_img,
+                    xref="paper", yref="paper",
+                    x=0.02, y=0.85,
+                    sizex=0.35, sizey=0.75,
+                    xanchor="left", yanchor="top",
+                    layer="above"
+                )
+            )
+
+            fig_bar.update_layout(
+                barmode="group",
+                height=260,
+                margin=dict(l=10, r=10, t=10, b=10),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+                xaxis=dict(showgrid=False),
+                yaxis=dict(showgrid=True, gridcolor="#F1F5F9", range=[0, 6500])
+            )
+            st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar": False})
+
+    with b_col2:
+        # Bottom(R) image overlay on Coach's Notes (Tips)
+        st.markdown(f"""
+            <div style="background: {'#2E1065' if is_dark else '#F5F3FF'}; border: 1px solid {'#5B21B6' if is_dark else '#DDD6FE'}; border-radius: 16px; padding: 20px; position: relative; min-height: 280px; overflow: hidden;">
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                    <span style="font-size: 14px;">✨</span>
+                    <span style="font-size: 11px; font-weight: 800; color: #7C3AED; letter-spacing: 0.8px;">AI ANALYSIS</span>
+                </div>
+                <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 800;">Coach's notes</h3>
+                <ul style="padding-left: 18px; margin: 0; color: var(--text-secondary); font-size: 12.5px; line-height: 1.6; max-width: 72%;">
+                    <li style="margin-bottom: 10px;"><strong>Shopping</strong> is your biggest category ({curr_symbol}134.99); set a {curr_symbol}100 cap and wait 24 hours before purchases.</li>
+                    <li style="margin-bottom: 10px;">Automate saving 10% of expenses (~{curr_symbol}55) into a separate account right after payday.</li>
+                    <li>Review all subscriptions and small recurring charges; cancel or downgrade anything unused this month.</li>
+                </ul>
+                <img src="{bottom_r_img}" style="position: absolute; bottom: -5px; right: -5px; width: 110px; pointer-events: none;" alt="Coach Tips Character" />
+            </div>
+        """, unsafe_allow_html=True)
+        
+def render_rewards_page():
+    st.markdown("# 🎁 Financial Health & Badges")
+    st.caption("Unlock milestones as you build healthy financial habits.")
+
+    b1, b2, b3 = st.columns(3)
+    
+    with b1:
+        st.markdown(
+            f"""
+            <div class="badge-card">
+                <div class="badge-emoji">🌱</div>
+                <h4>Budget Novice</h4>
+                <p>Tracked over 10 transactions successfully.</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with b2:
+        savings_reached = total_balance >= st.session_state["settings"]["savings_goal"]
+        locked_class = "" if savings_reached else "badge-locked"
+        st.markdown(
+            f"""
+            <div class="badge-card {locked_class}">
+                <div class="badge-emoji">🎯</div>
+                <h4>Goal Saver</h4>
+                <p>Reached 100% of your savings goal.</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with b3:
+        st.markdown(
+            """
+            <div class="badge-card badge-locked">
+                <div class="badge-emoji">🔥</div>
+                <h4>30-Day Streak</h4>
+                <p>Log expenses every day for a whole month.</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 def render_settings_page():
-    st.markdown("<h1><span class='purple-text'>⚙️ Settings</span></h1>", unsafe_allow_html=True)
-    st.caption("Customize your Lumen experience.")
-    
-    st.session_state["dark_mode"] = st.toggle("Dark Mode", value=st.session_state["dark_mode"])
-    
-    new_name = st.text_input("User Name", value=st.session_state["settings"]["user_name"])
-    new_savings = st.number_input("Monthly Savings Goal", value=float(st.session_state["settings"]["savings_goal"]))
-    
-    if st.button("Save Changes"):
-        st.session_state["settings"]["user_name"] = new_name
-        st.session_state["settings"]["savings_goal"] = new_savings
-        st.success("Settings updated successfully!")
-        st.rerun()
+    st.markdown("# ⚙️ Settings")
+    st.caption("Personalize your profile and application preferences.")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### Profile Settings")
+        u_name = st.text_input("Name", value=st.session_state["settings"]["user_name"])
+        u_email = st.text_input("Email", value=st.session_state["settings"]["user_email"])
+        u_curr = st.selectbox("Currency Symbol", ["₹", "$", "€", "£", "¥"], index=["₹", "$", "€", "£", "¥"].index(st.session_state["settings"]["currency"]))
+        
+        st.markdown("### Goals")
+        s_goal = st.number_input("Savings Goal Cap", value=st.session_state["settings"]["savings_goal"], step=1000.0)
+
+        if st.button("Save Settings", type="primary"):
+            st.session_state["settings"]["user_name"] = u_name
+            st.session_state["settings"]["user_email"] = u_email
+            st.session_state["settings"]["currency"] = u_curr
+            st.session_state["settings"]["savings_goal"] = s_goal
+            st.success("Settings updated successfully!")
+            st.rerun()
+
+    with col2:
+        st.markdown("### Appearance")
+        dark_toggle = st.toggle("Enable Dark Mode", value=st.session_state["dark_mode"])
+        if dark_toggle != st.session_state["dark_mode"]:
+            st.session_state["dark_mode"] = dark_toggle
+            st.rerun()
 
 # ==========================================
-# 7. ROUTING ENGINE
+# 7. MAIN ROUTER
 # ==========================================
-page = st.session_state["page"]
+page_map = {
+    "Dashboard": render_dashboard_page,
+    "AI Chat": render_ai_chat_page,
+    "Calendar": render_calendar_page,
+    "Transactions": render_transactions_page,
+    "Budgets": render_budget_page,
+    "Reports": render_reports_page,
+    "Rewards": render_rewards_page,
+    "Settings": render_settings_page,
+}
 
-if page == "Dashboard":
-    render_dashboard_page()
-elif page == "AI Chat":
-    render_ai_chat_page()
-elif page == "Calendar":
-    render_calendar_page()
-elif page == "Transactions":
-    render_transactions_page()
-elif page == "Budgets":
-    render_budgets_page()
-elif page == "Reports":
-    render_reports_page()
-elif page == "Rewards":
-    render_rewards_page()
-elif page == "Settings":
-    render_settings_page()
+# Execute active page function
+page_map.get(st.session_state["page"], render_dashboard_page)()
