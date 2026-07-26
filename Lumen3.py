@@ -1120,41 +1120,6 @@ def render_budget_card(item):
 
         st.progress(pct / 100)
 
-def render_budget_page():
-    st.caption("BUDGETS")
-    
-    head_col1, head_col2, head_col3 = st.columns([0.55, 0.25, 0.20])
-    with head_col1:
-        st.markdown("<h1 style='margin:0;'>Plan the month, own it 🪄</h1>", unsafe_allow_html=True)
-        st.caption("Smart budgets today, stress-free tomorrow. 💜")
-    with head_col2:
-        try:
-            st.image("assets/Upper.png", width=90)
-        except Exception:
-            pass
-    with head_col3:
-        if st.button("➕ New budget", type="primary", use_container_width=True):
-            pass
-
-    st.write("")
-
-    categories_data = [
-        {"name": "Food", "spent": 56.00, "total": 600.00, "lumi": "assets/Food.png"},
-        {"name": "Transport", "spent": 40.50, "total": 250.00, "lumi": "assets/Travel.png"},
-        {"name": "Shopping", "spent": 134.99, "total": 400.00, "lumi": "assets/Shoping.png"},
-        {"name": "Bills", "spent": 120.00, "total": 250.00, "lumi": "assets/Bills.png"},
-        {"name": "Entertainment", "spent": 15.99, "total": 200.00, "lumi": "assets/entertainment.png"},
-        {"name": "Groceries", "spent": 107.40, "total": 500.00, "lumi": "assets/Groceries.png"},
-    ]
-
-    for i in range(0, len(categories_data), 2):
-        col_left, col_right = st.columns(2)
-        with col_left:
-            render_budget_card(categories_data[i])
-        if i + 1 < len(categories_data):
-            with col_right:
-                render_budget_card(categories_data[i+1])
-
 def render_reports_page():
     # Asset paths
     lumi_coach_path = "assets/LumiCoach.png"
