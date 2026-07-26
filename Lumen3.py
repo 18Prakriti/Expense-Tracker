@@ -1157,14 +1157,9 @@ def render_budget_page():
 
 def render_reports_page():
     # Asset paths
-    lumi_coach_path ="assets/LumiCoach.png"
-    trend_path ="assets/Trend.png"
-    bottom_r_path ="assets/Bottom(R).png"
-
-    # Convert paths for embedded rendering
-    lumi_coach_img = "assets/LumiCoach.png"(lumi_coach_path)
-    trend_img = "assets/Trend.png"(trend_path)
-    bottom_r_img = "assets/Bottom(R).png"(bottom_r_path)
+    lumi_coach_path = "assets/LumiCoach.png"
+    trend_path = "assets/Trend.png"
+    bottom_r_path = "assets/Bottom(R).png"
 
     # --- Top Banner Header ---
     st.markdown(f"""
@@ -1177,7 +1172,7 @@ def render_reports_page():
                 <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">Data doesn't lie, but it does help! 💜</p>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
-                <img src="{trend_img}" style="height: 70px; object-fit: contain;" alt="Lumi Trend Banner" />
+                <img src="{trend_path}" style="height: 70px; object-fit: contain;" alt="Lumi Trend Banner" />
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -1250,7 +1245,7 @@ def render_reports_page():
         # Add Lumi Character callout annotation inside line chart
         fig_trend.add_layout_image(
             dict(
-                source=trend_img,
+                source=trend_path,
                 xref="x", yref="y",
                 x="Mar", y=3600,
                 sizex=1.8, sizey=2200,
@@ -1272,60 +1267,6 @@ def render_reports_page():
         st.plotly_chart(fig_trend, use_container_width=True, config={"displayModeBar": False})
 
     st.write("")
-
-    # --- Section: Income vs Expense (LumiCoach) & AI Coach's Notes (Bottom(R)) ---
-    b_col1, b_col2 = st.columns([1.2, 1])
-
-    with b_col1:
-        with st.container(border=True):
-            st.markdown("### Income vs Expense")
-            
-            fig_bar = go.Figure()
-            fig_bar.add_trace(go.Bar(name="Expenses", x=months, y=[0, 0, 0, 0, 0, 0, 950], marker_color="#8B5CF6"))
-            fig_bar.add_trace(go.Bar(name="Income", x=months, y=[0, 0, 0, 0, 5000, 5000, 0], marker_color="#10B981"))
-
-            # LumiCoach character overlay on Income vs Expense
-            fig_bar.add_layout_image(
-                dict(
-                    source=lumi_coach_img,
-                    xref="paper", yref="paper",
-                    x=0.02, y=0.85,
-                    sizex=0.35, sizey=0.75,
-                    xanchor="left", yanchor="top",
-                    layer="above"
-                )
-            )
-
-            fig_bar.update_layout(
-                barmode="group",
-                height=260,
-                margin=dict(l=10, r=10, t=10, b=10),
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-                xaxis=dict(showgrid=False),
-                yaxis=dict(showgrid=True, gridcolor="#F1F5F9", range=[0, 6500])
-            )
-            st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar": False})
-
-    with b_col2:
-        # Bottom(R) image overlay on Coach's Notes (Tips)
-        st.markdown(f"""
-            <div style="background: {'#2E1065' if is_dark else '#F5F3FF'}; border: 1px solid {'#5B21B6' if is_dark else '#DDD6FE'}; border-radius: 16px; padding: 20px; position: relative; min-height: 280px; overflow: hidden;">
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                    <span style="font-size: 14px;">✨</span>
-                    <span style="font-size: 11px; font-weight: 800; color: #7C3AED; letter-spacing: 0.8px;">AI ANALYSIS</span>
-                </div>
-                <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 800;">Coach's notes</h3>
-                <ul style="padding-left: 18px; margin: 0; color: var(--text-secondary); font-size: 12.5px; line-height: 1.6; max-width: 72%;">
-                    <li style="margin-bottom: 10px;"><strong>Shopping</strong> is your biggest category ({curr_symbol}134.99); set a {curr_symbol}100 cap and wait 24 hours before purchases.</li>
-                    <li style="margin-bottom: 10px;">Automate saving 10% of expenses (~{curr_symbol}55) into a separate account right after payday.</li>
-                    <li>Review all subscriptions and small recurring charges; cancel or downgrade anything unused this month.</li>
-                </ul>
-                <img src="{bottom_r_img}" style="position: absolute; bottom: -5px; right: -5px; width: 110px; pointer-events: none;" alt="Coach Tips Character" />
-            </div>
-        """, unsafe_allow_html=True)
-        
 def render_rewards_page():
     st.markdown("# 🎁 Financial Health & Badges")
     st.caption("Unlock milestones as you build healthy financial habits.")
